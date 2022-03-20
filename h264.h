@@ -27,7 +27,7 @@
 
 #define DELTA                  10000          //us
 #define Measure_message_length 600         //bytes
-#define File_location          "/tmp/tmp.mtUGeb20dO/test.h264"
+#define File_location          "/home/ubuntu/tmp.mtUGeb20dO/test.h264"
 #define Timestamp_parameter    1640966400000000
 
 typedef int SOCKET;
