@@ -19,7 +19,7 @@
 
 #define PACKET_BUFFER_END      (unsigned int)0x00000000
 #define MAX_RTP_PKT_LENGTH     1400
-#define DEST_IP                "127.0.0.1" /* 显示端 IP 地址 */
+#define DEST_IP                "127.0.0.1" /* 接收端端 IP 地址 */
 #define DEST_PORT              12346
 #define DEST_PORT1              12348
 #define H264                   96
@@ -27,7 +27,7 @@
 
 #define DELTA                  10000          //us
 #define Measure_message_length 600         //bytes
-#define File_location          "/root/jetbrains/tmp/tmp.rGyBnC6xMm//test.h264"
+#define File_location          "/root/jetbrains/tmp/tmp.rGyBnC6xMm/test.h264"
 #define Timestamp_parameter    1640966400000000
 
 typedef int SOCKET;
