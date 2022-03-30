@@ -442,11 +442,11 @@ void Send_measurement_message(SOCKET socket1, const char *sendbufp, int bytesp, 
     prtpdata=(PRTPDATA*)&sendbufp[12];
     prtpdata->send_Index = (*seq_nump);
     prtpdata->send_count = (*seq_nump);
+
     gettimeofday(&tv,NULL);
     timestamp = tv.tv_sec*1000000 + tv.tv_usec - Timestamp_parameter;
 //    prtpdata->send_time =htonl(timestamp);
     prtpdata->send_time =timestamp;
-
     rtp_hdrp->timestamp = htonl(ts_current);
     bytesp=Measure_message_length;
     sendto(socket1, sendbufp, bytesp, 0, (struct sockaddr *) serverp, sizeof((*serverp)));
