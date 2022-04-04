@@ -16,14 +16,18 @@
 #include <sys/time.h>
 #include <arpa/inet.h>
 #include <netinet/in.h>
+#include "pthread.h"
 
 #define PACKET_BUFFER_END      (unsigned int)0x00000000
 #define MAX_RTP_PKT_LENGTH     1400
-#define DEST_IP                "127.0.0.1" /* 接收端端 IP 地址 */
-#define DEST_PORT              12346
-#define DEST_PORT1              12348
+#define DEST_IP                "127.0.0.1" //客户端IP
+#define IP_SELF                "127.0.0.1" //本机IP
+#define DEST_PORT              12346    //流媒体播放器端口
+#define DEST_PORT1             12348    //测量程序端口
+#define BACK_PORT              12350    //数据包发回端口
 #define H264                   96
 #define PRTP                   101
+#define MAXDATASIZE            1500
 
 #define DELTA                  10000          //us
 #define Measure_message_length 600         //bytes
@@ -132,5 +136,20 @@ typedef struct
     unsigned int send_time;
 
 }PRTPDATA;
+
+typedef struct
+{
+    /**//* byte 0-3 */
+    unsigned int send_Index;
+    /**//* bytes 4-7 */
+    unsigned int send_Count;
+    /**//* bytes 8-11 */
+    unsigned int send_Time;   /* stream number is used here. */
+    /**//* bytes 12-15 */
+    unsigned int receive_Time;
+    /**//* bytes 16-20 */
+    unsigned int receive_resend_Time;
+    /**//* bytes 21-24 */
+} PRTPDATA_RETURN;
 
 #endif //SEND_H264_H

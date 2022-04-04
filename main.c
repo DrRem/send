@@ -180,10 +180,58 @@ void dump(NALU_t *n)
     printf("nal_unit_type: %x\n", n->nal_unit_type);
 }
 
+int sntp_test_thread(){
+    printf("SNTP测试开始：\n");
+    PRTPDATA_RETURN * rprtpData = NULL;
+    char recvbuf[MAXDATASIZE];
+    int socket1;
+    struct sockaddr_in client;
+    struct timeval tv;
+    socklen_t len_client = sizeof(client);
+    socklen_t receive_bytes = 0;
+    socket1 = socket(AF_INET, SOCK_DGRAM, 0);
+    client.sin_family = AF_INET;
+    client.sin_addr.s_addr = inet_addr(IP_SELF);
+    client.sin_port = htons(BACK_PORT);
+    unsigned int delay,timestamp4;
+    if (bind(socket1, (struct sockaddr*)&client, sizeof(client)) == -1)
+    {
+        printf("SNTP Error:Bind to local machine error.\n");
+
+        return getchar();
+    }
+    else
+    {
+        printf("SNTP:Bind to local machine.\n");
+    }
+    while ((receive_bytes = recvfrom(socket1, recvbuf, MAXDATASIZE, 0, (struct sockaddr *)&client, &len_client)) > 0)
+    {
+        gettimeofday(&tv,NULL);
+        rprtpData = (PRTPDATA_RETURN*)&recvbuf[12];
+        timestamp4 = tv.tv_sec*1000000 + tv.tv_usec - Timestamp_parameter;
+        printf("包序号：%u\n",rprtpData->send_Index);
+//        printf("时间戳1：%u\n",rprtpData->send_Time);
+//        printf("时间戳2：%u\n",rprtpData->receive_Time);
+//        printf("时间戳3：%u\n",rprtpData->receive_resend_Time);
+//        printf("时间戳4：%u\n",timestamp4);
+        delay = rprtpData->receive_Time - rprtpData->send_Time + timestamp4 - rprtpData->receive_resend_Time;
+        printf("本次测得SNTP时延(ms)：%f\n",(double)delay/2000);
+    }
+}
+
 int main(int argc, char* argv[])
 {
     //FILE *stream;
     //stream=fopen("Test.264", "wb");
+
+    pthread_t thread;
+    int sntp_thread = pthread_create(&thread,NULL,(void *)&sntp_test_thread,(void *)NULL);
+    if(sntp_thread != 0){
+        printf("Error：创建SNTP延迟检测算法线程失败！\n");
+        exit(1);
+    } else{
+        printf("SNTP测试就绪\n");
+    }
     NALU_t *n;
     SOCKET socket1;
     char  *nalu_payload;
